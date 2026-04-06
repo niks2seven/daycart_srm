@@ -1,20 +1,98 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+🛒 DayCart – Smart Daily Essentials Delivery Platform
 
-# Run and deploy your AI Studio app
+🚀 DayCart is a modern full-stack web application that automates daily essential deliveries through subscriptions and instant ordering. It aims to simplify everyday shopping by combining convenience, automation, and speed.
 
-This contains everything you need to run your app locally.
+🌐 Live Demo
 
-View your app in AI Studio: https://ai.studio/apps/0c13f3f7-460f-40c6-9112-35620de183d7
+👉 https://day-cart.vercel.app/
 
-## Run Locally
+📌 Overview
 
-**Prerequisites:**  Node.js
+DayCart is designed to solve the problem of repeatedly ordering daily essentials like milk, bread, fruits, etc. Users can subscribe to products and get them delivered automatically, or place instant orders when needed.
 
+✨ Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+👤 User Features
+
+🔐 Authentication (Login / Signup)
+
+🛒 Add to Cart & Manage Items
+
+🔁 Subscription-based ordering (daily essentials)
+
+⚡ Instant product ordering
+
+📦 Order tracking system
+
+🔍 Product search & filtering
+
+🛠 Admin Features
+
+📊 Dashboard for managing products
+
+➕ Add / Edit / Delete products
+
+📦 Order management system
+
+👥 User management
+
+🧠 Problem It Solves
+
+Eliminates repetitive daily ordering
+Saves time with automated subscriptions
+Provides a smooth and fast grocery shopping experience
+
+🏗️ Tech Stack
+💻 Frontend
+React.js (with TypeScript)
+Vite
+Tailwind CSS
+⚙️ Backend
+Node.js
+Express.js
+🗄 Database
+MongoDB / Supabase (based on your implementation)
+☁️ Deployment
+Vercel (Frontend)
+Backend (Render / Railway / etc.)
+⚙️ System Architecture
+User → Frontend (React) → Backend API (Express) → Database
+Frontend handles UI & user interaction
+Backend manages API logic & authentication
+Database stores users, products, orders, subscriptions
+
+📂 Folder Structure
+/client        → Frontend (React)
+/server        → Backend (Express)
+/database      → DB schemas
+/components    → UI Components
+/pages         → App pages
+📸 Screenshots
+
+(Add your project screenshots here)
+
+📈 Future Improvements
+📱 Mobile App (React Native)
+💳 Payment Gateway Integration
+🤖 AI-based product recommendations
+📦 Smart delivery scheduling
+🔔 Notifications system
+🧑‍💻 Team
+👨‍💻 Varun Dadhich
+👩‍💻 Niharika Singh
+🏆 Achievements
+
+🎯 Selected among 25,000+ teams at India Innovates 2026
+📍 Presented at Bharat Mandapam
+
+📄 License
+
+This project is licensed under the MIT License.
+
+⭐ Support
+
+If you like this project:
+
+⭐ Star the repo
+🍴 Fork it
+🤝 Contribute

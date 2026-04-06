@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, formatCurrency } from '../lib/utils';
+import { Link } from 'react-router-dom';
 
 const CATEGORIES = ['All', 'Dairy', 'Bakery', 'Fruits', 'Vegetables', 'Beverages'];
 
@@ -57,10 +58,10 @@ export default function Home() {
       {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tighter mb-2">
-            Good Morning, <span className="text-primary">{profile?.full_name?.split(' ')[0] || 'User'}</span>
+          <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight mb-2 leading-tight">
+            Hello, <span className="text-primary italic">{profile?.full_name?.split(' ')[0] || 'User'}</span>
           </h1>
-          <p className="text-slate-500 font-medium">What can we deliver in 15 minutes today?</p>
+          <p className="text-slate-500 font-semibold text-lg">What can we deliver in 15 minutes today?</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative flex-1 md:w-64">
@@ -84,60 +85,37 @@ export default function Home() {
       {/* Bento Grid Features */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div 
-          whileHover={{ y: -4 }}
-          className="md:col-span-2 bento-card bg-secondary text-white overflow-hidden relative group min-h-[200px] flex items-center"
+          whileHover={{ y: -8, scale: 1.005 }}
+          className="md:col-span-3 bento-card bg-slate-900 text-white overflow-hidden relative group min-h-[140px] flex items-center rounded-[32px] shadow-2xl shadow-primary/10"
         >
           <div className="absolute inset-0 z-0">
             <img 
-              src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&q=80" 
+              src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1600&q=80" 
               alt="Fresh Groceries" 
-              className="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/20 to-transparent" />
           </div>
 
-          <div className="relative z-10 p-2">
-            <div className="flex items-center gap-2 text-primary mb-2">
-              <Zap size={16} fill="currentColor" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Flash Delivery</span>
+          <div className="relative z-10 p-6 md:p-8 w-full flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-primary/20 backdrop-blur-md rounded-full text-primary text-[8px] font-black uppercase tracking-widest mb-2 border border-primary/20">
+                <Zap size={8} className="fill-current" />
+                Flash Delivery
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-black tracking-tighter mb-1 leading-none">
+                Freshness <span className="text-primary italic">Guaranteed.</span>
+              </h2>
+              <p className="text-slate-300 text-xs font-medium max-w-md leading-relaxed">
+                Get farm-fresh essentials delivered to your doorstep in under 15 minutes.
+              </p>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-1 leading-tight">
-              Day<span className="text-primary">Cart</span>
-            </h2>
-            <p className="text-slate-300 text-sm font-medium mb-4 max-w-xs">
-              Everyday groceries, made easy. Delivered in <span className="text-primary font-bold">15 minutes</span>.
-            </p>
-            <button className="bg-primary hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-orange-900/20 flex items-center gap-2 text-sm">
-              Order Now
-              <ArrowRight size={16} />
+            
+            <button className="flex-shrink-0 flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 group/btn text-xs">
+              Shop Now
+              <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
             </button>
-          </div>
-        </motion.div>
-
-        <motion.div 
-          whileHover={{ y: -4 }}
-          className="bento-card bg-orange-50 border-orange-100"
-        >
-          <div className="flex items-center gap-2 text-orange-600 mb-4">
-            <Star size={20} fill="currentColor" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em]">Loyalty</span>
-          </div>
-          <h3 className="text-2xl font-display font-bold text-slate-900 mb-2">
-            {profile?.loyalty_points || 0} Points
-          </h3>
-          <p className="text-slate-500 text-sm font-medium mb-6">
-            You're ₹200 away from your next reward.
-          </p>
-          <div className="w-full h-3 bg-white rounded-full overflow-hidden border border-orange-200">
-            <div 
-              className="h-full bg-primary transition-all duration-1000" 
-              style={{ width: `${((profile?.loyalty_points || 0) % 100)}%` }} 
-            />
-          </div>
-          <div className="mt-8 flex items-center gap-2 text-primary font-bold text-sm">
-            <TrendingUp size={16} />
-            <span>View Rewards</span>
           </div>
         </motion.div>
       </section>

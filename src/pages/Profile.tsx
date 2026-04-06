@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Wallet, Package, Clock, CheckCircle2, History, CreditCard, LogOut, Settings, ShieldCheck, ArrowRight, ShoppingCart, Star, Pause, Play, XCircle, FastForward, Plus, X, Calendar, Info } from 'lucide-react';
+import { User, Wallet, Package, Clock, CheckCircle2, History, CreditCard, LogOut, Settings, ShieldCheck, ArrowRight, ShoppingCart, Star, Pause, Play, XCircle, FastForward, Plus, X, Calendar, Info, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { cn, formatCurrency } from '../lib/utils';
@@ -15,6 +15,9 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState<any>(null);
   const [updatingSlot, setUpdatingSlot] = useState(false);
+  const [skippingId, setSkippingId] = useState<string | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editName, setEditName] = useState('');
 
   const fetchData = async () => {
     if (!profile?.id) return;
@@ -48,6 +51,7 @@ export default function Profile() {
   useEffect(() => {
     if (!profile?.id) return;
 
+    setEditName(profile.full_name || '');
     setLoading(true);
     fetchData();
 
@@ -106,13 +110,33 @@ export default function Profile() {
   };
 
   const handleSkipNext = async (sub: any) => {
+    setSkippingId(sub.id);
     const nextDate = format(addDays(new Date(), 1), 'yyyy-MM-dd');
     const skippedDates = sub.skipped_dates || [];
-    if (skippedDates.includes(nextDate)) return;
+    if (skippedDates.includes(nextDate)) {
+      setSkippingId(null);
+      return;
+    }
 
     await handleUpdateSubscription(sub.id, {
       skipped_dates: [...skippedDates, nextDate]
     });
+    setSkippingId(null);
+  };
+
+  const handleUpdateProfile = async () => {
+    if (!profile?.id) return;
+    const { error } = await supabase
+      .from('profiles')
+      .update({ full_name: editName })
+      .eq('id', profile.id);
+    
+    if (error) {
+      alert('Failed to update profile');
+    } else {
+      await refreshProfile();
+      setShowEditModal(false);
+    }
   };
 
   const handleUpdateSlot = async (subId: string, slot: string) => {
@@ -204,22 +228,53 @@ export default function Profile() {
             </div>
           </motion.div>
 
-          <div className="bento-card space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-              <Settings size={14} />
-              Account Settings
-            </h3>
-            <div className="space-y-2">
-              <button className="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-colors flex items-center justify-between group">
-                <span className="text-sm font-bold text-slate-700">Edit Profile</span>
-                <ArrowRight size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+          <div className="bento-card bg-primary/5 border-primary/10 space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                <Settings size={14} />
+                Account Settings
+              </h3>
+            </div>
+            <div className="space-y-3">
+              <button 
+                onClick={() => setShowEditModal(true)}
+                className="w-full text-left p-5 bg-white border border-slate-100 rounded-3xl hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all flex items-center justify-between group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                    <User size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-base font-bold text-slate-900">Edit Profile</span>
+                    <span className="text-xs text-slate-500 font-medium">Update your personal info</span>
+                  </div>
+                </div>
+                <ArrowRight size={20} className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </button>
-              <button className="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-colors flex items-center justify-between group">
-                <span className="text-sm font-bold text-slate-700">Payment Methods</span>
-                <ArrowRight size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+              
+              <button className="w-full text-left p-5 bg-white border border-slate-100 rounded-3xl hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all flex items-center justify-between group">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
+                    <CreditCard size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-base font-bold text-slate-900">Payment Methods</span>
+                    <span className="text-xs text-slate-500 font-medium">Manage your cards & UPI</span>
+                  </div>
+                </div>
+                <ArrowRight size={20} className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </button>
-              <button className="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-colors flex items-center justify-between group text-red-500">
-                <span className="text-sm font-bold">Delete Account</span>
+
+              <button className="w-full text-left p-5 bg-red-50/50 border border-red-100 rounded-3xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-between group">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-500">
+                    <XCircle size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-base font-bold text-red-600">Delete Account</span>
+                    <span className="text-xs text-red-400 font-medium">Permanently remove data</span>
+                  </div>
+                </div>
               </button>
             </div>
           </div>
@@ -303,10 +358,20 @@ export default function Profile() {
                       )}
                       <button 
                         onClick={() => handleSkipNext(sub)}
-                        className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors"
+                        disabled={skippingId === sub.id}
+                        className={cn(
+                          "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                          skippingId === sub.id 
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
+                            : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                        )}
                       >
-                        <FastForward size={14} />
-                        Skip Next Day
+                        {skippingId === sub.id ? (
+                          <RefreshCw size={14} className="animate-spin" />
+                        ) : (
+                          <FastForward size={14} />
+                        )}
+                        {skippingId === sub.id ? 'Skipping...' : 'Skip Next Day'}
                       </button>
                       <button 
                         onClick={() => setSelectedSub(sub)}
@@ -458,6 +523,65 @@ export default function Profile() {
       </div>
 
       <AnimatePresence>
+        {showEditModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowEditModal(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-white rounded-[40px] shadow-2xl overflow-hidden p-10"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl font-display font-bold text-slate-900">Edit Profile</h2>
+                <button 
+                  onClick={() => setShowEditModal(false)}
+                  className="p-3 bg-slate-100 text-slate-400 rounded-2xl hover:bg-slate-200 transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                  <input 
+                    type="text" 
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-slate-900"
+                    placeholder="Enter your name"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    value={profile.email}
+                    disabled
+                    className="w-full bg-slate-100 border border-slate-200 rounded-2xl py-4 px-6 text-slate-400 font-bold cursor-not-allowed"
+                  />
+                  <p className="text-[10px] text-slate-400 font-medium ml-1">Email cannot be changed for security reasons.</p>
+                </div>
+
+                <button 
+                  onClick={handleUpdateProfile}
+                  className="w-full py-5 bg-primary text-white rounded-[24px] font-bold text-lg shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all mt-4"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {selectedSub && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div

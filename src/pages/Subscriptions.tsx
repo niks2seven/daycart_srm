@@ -430,7 +430,11 @@ export default function Subscriptions() {
                     {sub.status}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-50 p-4 rounded-2xl">
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Plan Fee</p>
+                    <p className="text-lg font-display font-bold text-slate-900">{formatCurrency(sub.subscription_fee)}</p>
+                  </div>
                   <div className="bg-slate-50 p-4 rounded-2xl">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Cost</p>
                     <p className="text-lg font-display font-bold text-primary">{formatCurrency(sub.total_cost)}</p>
@@ -768,12 +772,16 @@ export default function Subscriptions() {
                       </div>
                     </div>
 
-                    <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10">
-                      <div className="flex items-center justify-between mb-2">
+                    <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Plan Fee</span>
+                        <span className="text-lg font-display font-bold text-slate-900">{formatCurrency(selectedSub.subscription_fee)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Value</span>
                         <span className="text-xl font-display font-bold text-primary">{formatCurrency(selectedSub.total_cost)}</span>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between pt-4 border-t border-primary/10">
                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Plan</span>
                         <span className="text-xs font-bold text-slate-700 uppercase tracking-widest">
                           {selectedSub.plan_type === 'full_month' ? 'Daily' : 'Custom Dates'}
@@ -783,6 +791,21 @@ export default function Subscriptions() {
                   </div>
 
                   <div className="space-y-8">
+                    {selectedSub.plan_type === 'custom' && (
+                      <div>
+                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Selected Dates</h3>
+                        <div className="bg-slate-50 rounded-[32px] p-6 border border-slate-100">
+                          <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto pr-2 no-scrollbar">
+                            {selectedSub.selected_dates?.map((date: string, i: number) => (
+                              <div key={i} className="px-3 py-1 bg-white border border-slate-100 rounded-lg text-[10px] font-bold text-slate-600">
+                                {new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div>
                       <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Delivery Slot</h3>
                       <div className="grid grid-cols-2 gap-3">
